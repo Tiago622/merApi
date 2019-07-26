@@ -17,7 +17,9 @@ var sequelize = new Sequelize('dbm7k835tulut9','bvkhykmoqygpoq','c641392c8697f38
 const models = {
   User: sequelize.import('./user'),
   Music:sequelize.import('./music'),
-  Feedback:sequelize.import('./feedback')
+  Feedback: sequelize.import('./feedback'),
+  ListaRepro: sequelize.import('./listaRepro'),
+  ListasMusicas: sequelize.import('./listasMusicas')
 };
 
 

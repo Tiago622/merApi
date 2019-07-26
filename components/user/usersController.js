@@ -25,13 +25,15 @@ exports.createUser = async (req, res) => {
 
         //***Validação do Email***/
         //verificar se o campo email está vazio e se é realmente um email
-        req.checkBody('email', 'Email is required or is not valid').notEmpty().isEmail();
+        req.checkBody('email', 'Email é obrigatório ou tem o formato errado').notEmpty().isEmail();
 
         //***Validação do Username***/
-        req.checkBody('username', 'Username is required').notEmpty();
+        req.checkBody('username', 'Username é obrigatório').notEmpty();
 
         //***Validação do Nome***/
-        req.checkBody('nome', 'Nome is required').notEmpty();
+        req.checkBody('nome', 'Nome é obrigatório').notEmpty();
+
+        req.check('hashPassword', 'Password é obrigatória ou tem o formato errado').notEmpty().matches(/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/);
 
         //verificar se o email inserido existe na base de dados
         await usersService.getUserByEmail(req.body.email).then(user => existsEmail = user).catch(err => console.log(err));
@@ -50,6 +52,7 @@ exports.createUser = async (req, res) => {
         var errors = req.validationErrors();
         //se existir erros de validação
         if (errors) {
+            console.log(errors)
             serverResponse = { status: "Erros na validação", response: errors }
             return res.send(serverResponse)
         }
@@ -73,6 +76,7 @@ exports.createUser = async (req, res) => {
         }
     }
     catch (err) {
+        console.log(err)
         serverResponse = { status: "Nao está autenticado | token expirou", response: {} }
         return res.send(serverResponse);
     }
@@ -136,7 +140,6 @@ exports.getAllUsers = async (req, res) => {
 
 //editar um utilizador
 exports.editUser = async (req, res) => {
-    console.log(req.body)
     let serverResponse = { status: "Not Updated | Utilizador não está na base de dados | Username ou email já existem", response: {} }
 
     var count = Object.keys(req.body).length;
@@ -177,7 +180,6 @@ exports.editUser = async (req, res) => {
         }
     }
 
-    console.log(updateUser);
     //variável que recebe a query da base de dados sobre o username do URL
     var existsUserNameURL;
     //variável que recebe a query da base de dados sobre o email
@@ -296,7 +298,7 @@ exports.login = async (req, res) => {
             userID: existsUserName.userID, username: existsUserName.username,
             nome: existsUserName.nome, isAdmin: existsUserName.isAdmin
         }, 'secret', {
-                expiresIn: 600 // expires in 10 minutos ***PARA TESTES****
+                expiresIn: 2000 // expires in 10 minutos ***PARA TESTES****
 
             });
         serverResponse.status = "Autenticado";
