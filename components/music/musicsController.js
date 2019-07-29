@@ -13,7 +13,7 @@ exports.uploadVideo = async (req, res) => {
     //variável que guarda a query à base de dados
     var existsMusica;
     //validar url
-    req.check('urlInput', 'URL é obrigatório ou tem o formato errado').notEmpty().matches(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/);
+    req.check('urlInput', 'O URL deve seguir o seguinte formato: https://www.youtube.com/watch?v=idVideo').notEmpty().matches(/^(http(s)??\:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9\-_]){11}/);
     //endereço do vídeo do youtube
         //verificar erros 
         var errors = req.validationErrors();
@@ -50,7 +50,7 @@ exports.uploadVideo = async (req, res) => {
 
 
 
-            /*amqp.connect('amqp://merUser:passwordMER@192.168.137.42', function (err, conn) {
+            amqp.connect('amqp://merUser:passwordMER@194.210.240.63', function (err, conn) {
                 conn.createChannel(function (err, ch) {
                     var q = 'musicExtraction';
                     //console.log("Conn = " + conn);
@@ -61,7 +61,7 @@ exports.uploadVideo = async (req, res) => {
                     console.log(" [x] Sent '%s'", url);
                 });
                 setTimeout(function () { conn.close(); process.exit(0) }, 500);
-            });*/
+            });
 
             serverResponse = { status: "Upload", response: {} }
             return res.send(serverResponse);
